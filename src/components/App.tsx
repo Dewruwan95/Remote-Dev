@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Background from "./Background";
 import Container from "./Container";
 import Footer from "./Footer";
@@ -11,32 +10,10 @@ import JobItemContent from "./JobItemContent";
 import ResultsCount from "./ResultsCount";
 import SortingControls from "./SortingControls";
 import PaginationControls from "./PaginationControls";
-import JobList from "./JobList";
-import { useDebounce, useJobItems } from "../lib/hooks";
 import { Toaster } from "react-hot-toast";
+import JobListSearch from "./JobListSearch";
 
 function App() {
-  // state
-  const [searchText, setSearchText] = useState("");
-  const debouncedSearchText = useDebounce(searchText, 250);
-  const { jobItems, isLoading } = useJobItems(debouncedSearchText);
-  const [currentPage, setCurrentPage] = useState(1);
-
-  // derived / computed state
-  const totalNumberOfResults = jobItems?.length || 0;
-  const totalNumberOfPages = totalNumberOfResults / 7;
-  const jobItemsSliced =
-    jobItems?.slice(currentPage * 7 - 7, currentPage * 7) || [];
-
-  // event handlers / actions
-  const handleChangePage = (direction: "next" | "previous") => {
-    if (direction === "next") {
-      setCurrentPage((prev) => prev + 1);
-    } else if (direction === "previous") {
-      setCurrentPage((prev) => prev - 1);
-    }
-  };
-
   return (
     <>
       <Background />
@@ -46,23 +23,18 @@ function App() {
           <BookmarksButton />
         </HeaderTop>
 
-        <SearchForm searchText={searchText} setSearchText={setSearchText} />
+        <SearchForm />
       </Header>
 
       <Container>
         <Sidebar>
           <SidebarTop>
-            <ResultsCount totalNumberOfResults={totalNumberOfResults} />
+            <ResultsCount />
             <SortingControls />
           </SidebarTop>
+          <JobListSearch />
 
-          <JobList jobItems={jobItemsSliced} isLoading={isLoading} />
-
-          <PaginationControls
-            currentPage={currentPage}
-            totalNumberOfPages={totalNumberOfPages}
-            onClick={handleChangePage}
-          />
+          <PaginationControls />
         </Sidebar>
 
         <JobItemContent />
